@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Electrodomésticos</title>
+  <link rel="stylesheet" href="./assets/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2 class="logo">SkyTrack</h2>
+    <nav>
+      <ul>
+        <li class="active"><a href="#">📊 Dashboard</a></li>
+        <li><a href="#">📦 Productos</a></li>
+        <li><a href="#">🏭 Proveedores</a></li>
+        <li><a href="#">📈 Estadísticas</a></li>
+        <li><a href="#">⚙️ Configuración</a></li>
+      </ul>
+    </nav>
+    <div class="user-profile">
+      <img src="user.jpg" alt="Usuario">
+      <p>Dashboard Ceser</p>
+    </div>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main class="dashboard">
+    <header>
+      <h2>Hola, User 👋</h2>
+      <button class="new-order">➕ Crear Nuevo Pedido</button>
+    </header>
+
+    <section class="stats">
+      <div class="card">
+        <h3>📦 Pedidos del mes</h3>
+        <p class="value">132 <span>envíos</span></p>
+        <canvas id="ordersChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>⚖️ Peso Promedio</h3>
+        <p class="value">32 <span>lbs</span></p>
+        <canvas id="weightChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>📍 Distancia Promedio</h3>
+        <p class="value">872 <span>mi</span></p>
+        <canvas id="distanceChart"></canvas>
+      </div>
+    </section>
+
+    <section class="map">
+      <h3>📌 Ubicación de Productos Más Vendidos</h3>
+      <div class="map-container">
+        <img src="map-example.jpg" alt="Mapa de ventas">
+      </div>
+    </section>
+  </main>
+
+  <script src="./assets/javascript/script.js"></script>
+</body>
+</html>
