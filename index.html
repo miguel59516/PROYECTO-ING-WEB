@@ -23,7 +23,7 @@
     </nav>
     <div class="user-profile">
       <img src="user.jpg" alt="Usuario">
-      <p>Dashboard Ceser</p>
+      <p>UserName</p>
     </div>
   </aside>
 
@@ -34,30 +34,40 @@
       <button class="new-order">➕ Crear Nuevo Pedido</button>
     </header>
 
+    <!-- Estadísticas -->
     <section class="stats">
       <div class="card">
-        <h3>📦 Pedidos del mes</h3>
-        <p class="value">132 <span>envíos</span></p>
-        <canvas id="ordersChart"></canvas>
+        <h3>🔥 Productos Más Vendidos</h3>
+        <ul id="top-sellers"></ul>
       </div>
 
       <div class="card">
-        <h3>⚖️ Peso Promedio</h3>
-        <p class="value">32 <span>lbs</span></p>
-        <canvas id="weightChart"></canvas>
+        <h3>💰 Productos con Mayor Utilidad</h3>
+        <ul id="top-profit"></ul>
       </div>
 
       <div class="card">
-        <h3>📍 Distancia Promedio</h3>
-        <p class="value">872 <span>mi</span></p>
-        <canvas id="distanceChart"></canvas>
+        <h3>🔖 Productos con Descuento Mayor</h3>
+        <ul id="top-discounts"></ul>
       </div>
     </section>
 
-    <section class="map">
-      <h3>📌 Ubicación de Productos Más Vendidos</h3>
-      <div class="map-container">
-        <img src="map-example.jpg" alt="Mapa de ventas">
+    <!-- Gráfico Pie de Proveedores -->
+    <section class="chart-section">
+      <h3>📊 Pedidos por Proveedor</h3>
+      <canvas id="providersChart"></canvas>
+    </section>
+
+    <!-- Promoción destacada -->
+    <section class="promotion">
+      <h3>🎉 Promoción Destacada</h3>
+      <div class="promo-card">
+        <img src="promo-product.jpg" alt="Promoción">
+        <div>
+          <h4>Smart TV 55” 4K</h4>
+          <p>Descuento: 30% por tiempo limitado.</p>
+          <button class="buy-btn">Comprar Ahora</button>
+        </div>
       </div>
     </section>
   </main>
@@ -65,3 +75,4 @@
   <script src="./assets/javascript/script.js"></script>
 </body>
 </html>
+
