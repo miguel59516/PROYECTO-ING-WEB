@@ -1,4 +1,3 @@
-// Configurar Firebase (reemplaza con tus credenciales)
 const firebaseConfig = {
     apiKey: "TU_API_KEY",
     authDomain: "TU_AUTH_DOMAIN",
@@ -8,5 +7,6 @@ const firebaseConfig = {
     appId: "TU_APP_ID"
   };
   
-  
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
   

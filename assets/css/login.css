@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #F4F4F6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  width: 350px;
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.input-group {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-field {
+  display: flex;
+  align-items: center;
+  background: #F4F4F6;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.input-field .icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 14px;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.options a {
+  color: #5865F2;
+  text-decoration: none;
+}
+
+.black-btn {
+  width: 100%;
+  padding: 12px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.social-login {
+  display: flex;
+  justify-content: space-between;
+}
+
+.google-btn, .apple-btn {
+  width: 48%;
+  padding: 10px;
+  background: white;
+  border: 1px solid #D9DBE9;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.google-btn img, .apple-btn img {
+  width: 20px;
+  margin-right: 8px;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+  }
+  .input-field.error {
+    border: 2px solid red;
+  }
+  .toggle-password {
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+
+.toggle-password {
+  cursor: pointer;
+  margin-left: 10px;
+}

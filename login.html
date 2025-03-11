@@ -4,24 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Electrodomésticos</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="./assets/css/login.css">
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
 </head>
 <body>
 
-  <!-- LOGIN -->
-  <div id="login-container" class="auth-container">
-    <h2>Iniciar Sesión</h2>
-    <button id="google-login" class="google-btn">🔵 Iniciar con Google</button>
-    <input type="email" id="email-login" placeholder="Correo">
-    <input type="password" id="password-login" placeholder="Contraseña">
-    <button id="login-btn" class="auth-btn">Ingresar</button>
-    <button id="forgot-password" class="forgot-btn">¿Olvidaste tu contraseña?</button>
-    <p>¿No tienes cuenta? <a href="#" id="show-register">Regístrate</a></p>
+  <div class="login-container">
+    <h2>Sign In</h2>
+
+    <div class="input-group">
+      <label>Email</label>
+      <div class="input-field">
+        <span class="icon">📧</span>
+        <input type="email" id="email-login" placeholder="Enter your Email">
+      </div>
+      <span class="error-message" id="error-email"></span>
+    </div>
+
+    <div class="input-group">
+      <label>Password</label>
+      <div class="input-field">
+        <span class="icon">🔒</span>
+        <input type="password" id="password-login" placeholder="Enter your Password">
+        <span class="toggle-password" onclick="togglePassword()">👁️</span>
+      </div>
+      <span class="error-message" id="error-password"></span>
+    </div>
+
+    <div class="options">
+      <label>
+        <input type="checkbox" id="remember-me"> Remember me
+      </label>
+      <a href="#" id="forgot-password">Forgot password?</a>
+    </div>
+
+    <button id="login-btn" class="black-btn">Sign In</button>
+
+    <p>Don't have an account? <a href="#" id="show-register">Sign Up</a></p>
   </div>
 
-  <!-- REGISTRO -->
-  <div id="register-container" class="auth-container hidden">
-    <h2>Registro</h2>
-   
+  <script src="./assets/javascript/firebase-config.js"></script>
+  <script src="./assets/javascript/login.js"></script>
+</body>
+</html>
