@@ -6,73 +6,66 @@
   <title>Dashboard - Electrodomésticos</title>
   <link rel="stylesheet" href="./assets/css/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="./assets/javascript/data.js"></script>
+  <script defer src="./assets/javascript/script.js"></script>
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <h2 class="logo">ApexBuy</h2>
-    <nav>
-      <ul>
-        <li class="active"><a href="#">📊 Dashboard</a></li>
-        <li><a href="#">📦 Productos</a></li>
-        <li><a href="#">🏭 Proveedores</a></li>
-        <li><a href="#">📈 Estadísticas</a></li>
-        <li><a href="#">⚙️ Configuración</a></li>
-      </ul>
-    </nav>
-    <div class="user-profile">
-      <img src="user.jpg" alt="Usuario">
-      <p>UserName</p>
-    </div>
-  </aside>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2 class="logo">📊 Dashboard</h2>
+      <nav class="menu">
+        <ul>
+          <li class="active"><a href="#">🏠 Inicio</a></li>
+          <li><a href="#">📈 Estadísticas</a></li>
+          <li><a href="#">📅 Pedidos</a></li>
+          <li><a href="#">📦 Productos</a></li>
+          <li><a href="#">⚙️ Configuración</a></li>
+          <li><a href="#">❓ Soporte</a></li>
+        </ul>
+      </nav>
+    </aside>
 
-  <!-- Contenido Principal -->
-  <main class="dashboard">
-    <header>
-      <h2>Hola, User 👋</h2>
-      <button class="new-order">➕ Crear Nuevo Pedido</button>
-    </header>
-
-    <!-- Estadísticas -->
-    <section class="stats">
-      <div class="card">
-        <h3>🔥 Productos Más Vendidos</h3>
-        <ul id="top-sellers"></ul>
-      </div>
-
-      <div class="card">
-        <h3>💰 Productos con Mayor Utilidad</h3>
-        <ul id="top-profit"></ul>
-      </div>
-
-      <div class="card">
-        <h3>🔖 Productos con Descuento Mayor</h3>
-        <ul id="top-discounts"></ul>
-      </div>
-    </section>
-
-    <!-- Gráfico Pie de Proveedores -->
-    <section class="chart-section">
-      <h3>📊 Pedidos por Proveedor</h3>
-      <canvas id="providersChart"></canvas>
-    </section>
-
-    <!-- Promoción destacada -->
-    <section class="promotion">
-      <h3>🎉 Promoción Destacada</h3>
-      <div class="promo-card">
-        <img src="promo-product.jpg" alt="Promoción">
-        <div>
-          <h4>Smart TV 55” 4K</h4>
-          <p>Descuento: 30% por tiempo limitado.</p>
-          <button class="buy-btn">Comprar Ahora</button>
+    <!-- Contenido Principal -->
+    <main class="main-content">
+      <!-- Topbar -->
+      <header class="topbar">
+        <input type="text" placeholder="🔍 Buscar..." class="search-bar">
+        <div class="user-info">
+          <span>USER</span>
+          <img src="user-avatar.png" alt="Avatar de usuario" class="avatar">
         </div>
-      </div>
-    </section>
-  </main>
+      </header>
 
-  <script src="./assets/javascript/script.js"></script>
+      <!-- Sección de Productos Destacados -->
+      <section class="dashboard-content">
+        <h2>📦 Productos Destacados</h2>
+        <div class="stats-container" id="stats-container"></div>
+      </section>
+
+      <!-- Sección de Pedidos a Proveedores -->
+      <section class="dashboard-content">
+        <h2>📊 Pedidos a Proveedores</h2>
+        <div class="charts-container">
+          <div class="chart-item">
+            <canvas id="chartSamsung"></canvas>
+            <p>📡 Samsung</p>
+          </div>
+          <div class="chart-item">
+            <canvas id="chartApple"></canvas>
+            <p>🍏 Apple</p>
+          </div>
+          <div class="chart-item">
+            <canvas id="chartBose"></canvas>
+            <p>🔊 Bose</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
 </body>
 </html>
 
