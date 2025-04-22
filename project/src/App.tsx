@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Bell, Settings, Users, Activity, TrendingUp, Search, ChevronDown, Package, DollarSign, AlertTriangle, ArrowUpRight, ArrowDownRight, SlidersHorizontal } from 'lucide-react';
+import { BarChart3, Bell, Settings, Users, Activity, TrendingUp, Search, ChevronDown, Package, DollarSign, AlertTriangle, ArrowUpRight, ArrowDownRight, SlidersHorizontal, Menu, X } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { Tooltip } from './components/Tooltip';
 import { LoadingSpinner } from './components/LoadingSpinner';
+import { ExportButton } from './components/ExportButton';
 import { useDebounce } from './hooks/useDebounce';
 
-// Mock data for the chart
 const priceData = [
   { date: '01/03', price: 85 },
   { date: '02/03', price: 87 },
@@ -19,39 +19,44 @@ const priceData = [
 function StatCard({ title, value, change, icon: Icon, trend, loading }: { title: string; value: string; change: string; icon: any; trend: 'up' | 'down'; loading?: boolean }) {
   if (loading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow border border-secondary/10">
+      <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow border border-secondary/10">
         <LoadingSpinner />
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow border border-secondary/10">
+    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow border border-secondary/10">
       <div className="flex items-center justify-between mb-4">
         <Tooltip label={`Información sobre ${title}`}>
           <div className="p-2 bg-primary/10 rounded-lg cursor-help">
-            <Icon className="w-6 h-6 text-primary" />
+            <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
           </div>
         </Tooltip>
-        <span className={`flex items-center gap-1 text-sm ${trend === 'up' ? 'text-green-500' : 'text-primary'}`}>
-          {trend === 'up' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+        <span className={`flex items-center gap-1 text-xs sm:text-sm ${trend === 'up' ? 'text-green-500' : 'text-primary'}`}>
+          {trend === 'up' ? <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4" /> : <ArrowDownRight className="w-3 h-3 sm:w-4 sm:h-4" />}
           {change}
         </span>
       </div>
-      <h3 className="text-secondary-dark text-sm mb-1">{title}</h3>
-      <p className="text-2xl font-semibold text-secondary-dark">{value}</p>
+      <h3 className="text-secondary-dark text-xs sm:text-sm mb-1">{title}</h3>
+      <p className="text-xl sm:text-2xl font-semibold text-secondary-dark">{value}</p>
     </div>
   );
 }
 
-function Sidebar() {
+function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [activeItem, setActiveItem] = useState('Resumen');
   
   return (
-    <div className="w-64 bg-secondary-dark h-screen fixed left-0 top-0 text-white p-4">
-      <div className="flex items-center gap-2 mb-8">
-        <BarChart3 className="w-8 h-8 text-primary" />
-        <h1 className="text-xl font-bold">ApexBuy Análisis</h1>
+    <div className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-30 w-64 bg-secondary-dark text-white p-4 transition-transform duration-300 ease-in-out lg:translate-x-0`}>
+      <div className="flex items-center justify-between gap-2 mb-8">
+        <div className="flex items-center gap-2">
+          <BarChart3 className="w-8 h-8 text-primary" />
+          <h1 className="text-xl font-bold">ApexBuy Análisis</h1>
+        </div>
+        <button onClick={onClose} className="lg:hidden text-white">
+          <X className="w-6 h-6" />
+        </button>
       </div>
       
       <nav className="space-y-2">
@@ -64,7 +69,10 @@ function Sidebar() {
         ].map(({ icon: Icon, label }) => (
           <Tooltip key={label} label={`Ver ${label}`}>
             <button
-              onClick={() => setActiveItem(label)}
+              onClick={() => {
+                setActiveItem(label);
+                onClose();
+              }}
               className={`flex items-center gap-3 w-full p-3 rounded-lg transition-colors ${
                 activeItem === label ? 'bg-primary text-white' : 'hover:bg-secondary-dark/80 text-gray-300'
               }`}
@@ -89,37 +97,43 @@ function Sidebar() {
   );
 }
 
-function Header() {
+function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      // Implement search functionality here
       console.log('Searching for:', debouncedSearchTerm);
     }
   }, [debouncedSearchTerm]);
 
   return (
-    <header className="h-16 bg-white border-b border-secondary/10 flex items-center justify-between px-6 fixed top-0 right-0 left-64 z-10">
+    <header className="h-16 bg-white border-b border-secondary/10 flex items-center justify-between px-4 sm:px-6 fixed top-0 right-0 left-0 lg:left-64 z-20">
       <div className="flex items-center gap-4 flex-1">
-        <div className="relative">
+        <button onClick={onMenuClick} className="lg:hidden">
+          <Menu className="w-6 h-6 text-secondary-dark" />
+        </button>
+        <div className="relative flex-1 max-w-xs sm:max-w-md">
           <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-secondary" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Buscar productos..."
-            className="pl-10 pr-4 py-2 border border-secondary/20 rounded-lg w-64 focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="pl-10 pr-4 py-2 border border-secondary/20 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 text-secondary-dark hover:bg-background rounded-lg">
+        <button className="hidden sm:flex items-center gap-2 px-4 py-2 text-secondary-dark hover:bg-background rounded-lg">
           Últimos 7 días
           <ChevronDown className="w-4 h-4" />
         </button>
       </div>
       
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
+        <ExportButton 
+          data={priceData}
+          filename="precio-productos"
+        />
         <Tooltip label="Filtros">
           <button className="p-2 hover:bg-background rounded-lg">
             <SlidersHorizontal className="w-5 h-5 text-secondary-dark" />
@@ -141,7 +155,7 @@ function Header() {
 
 function PriceTrendChart() {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 border border-secondary/10">
+    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-secondary/10">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-secondary-dark">Tendencias de Precios</h3>
@@ -198,7 +212,7 @@ function CompetitorAnalysis() {
   });
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 border border-secondary/10">
+    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-secondary/10">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-secondary-dark">Análisis de Competencia</h3>
@@ -213,7 +227,7 @@ function CompetitorAnalysis() {
               <SlidersHorizontal className="w-5 h-5 text-secondary-dark" />
             </button>
           </Tooltip>
-          <button className="flex items-center gap-2 px-3 py-2 text-secondary-dark hover:bg-background rounded-lg text-sm">
+          <button className="hidden sm:flex items-center gap-2 px-3 py-2 text-secondary-dark hover:bg-background rounded-lg text-sm">
             Esta Semana
             <ChevronDown className="w-4 h-4" />
           </button>
@@ -243,7 +257,7 @@ function CompetitorAnalysis() {
 
 function AlertsCard() {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 border border-secondary/10">
+    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-secondary/10">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-secondary-dark">Alertas Recientes</h3>
@@ -283,7 +297,6 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate data loading
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1500);
@@ -292,11 +305,11 @@ function Dashboard() {
   }, []);
 
   return (
-    <main className="ml-64 pt-16 bg-background min-h-screen">
-      <div className="p-6">
+    <main className="lg:ml-64 pt-16 bg-background min-h-screen">
+      <div className="p-4 sm:p-6">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-4 text-secondary-dark">Resumen del Panel</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 text-secondary-dark">Resumen del Panel</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <StatCard
               title="Total Productos"
               value="1,234"
@@ -332,12 +345,12 @@ function Dashboard() {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <PriceTrendChart />
           <CompetitorAnalysis />
         </div>
         
-        <div className="mt-6">
+        <div className="mt-4 sm:mt-6">
           <AlertsCard />
         </div>
       </div>
@@ -346,11 +359,19 @@ function Dashboard() {
 }
 
 function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="flex">
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
       <div className="flex-1">
-        <Header />
+        <Header onMenuClick={() => setIsSidebarOpen(true)} />
         <Dashboard />
       </div>
     </div>
