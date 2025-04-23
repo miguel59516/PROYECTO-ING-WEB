@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEXBUY - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container" id="form-container">
+        <!-- Login Form -->
+        <div class="login-container">
+            <div class="logo">
+                <!-- Logo placeholder -->
+                <div style="font-size: 28px; font-weight: bold; color: var(--primary-color);">APEX<span style="color: var(--text-color);">BUY</span></div>
+            </div>
+            <h1>Iniciar Sesión</h1>
+           
+            <form id="login-form">
+                <div class="input-group" id="login-email-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="login-email" placeholder="Correo electrónico" required>
+                    <i class="fas fa-check validation-icon valid-icon"></i>
+                    <i class="fas fa-times validation-icon invalid-icon"></i>
+                    <div class="error-message">Por favor ingresa un correo electrónico válido</div>
+                </div>
+               
+                <div class="input-group" id="login-password-group">
+                    <i class="fas fa-lock"></i>
+                    <div class="password-wrapper">
+                        <input type="password" id="login-password" placeholder="Contraseña" required>
+                        <button type="button" class="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <i class="fas fa-check validation-icon valid-icon"></i>
+                    <i class="fas fa-times validation-icon invalid-icon"></i>
+                    <div class="error-message">Por favor ingresa tu contraseña</div>
+                </div>
+               
+                <button type="submit" id="login-btn">Iniciar Sesión</button>
+               
+                <div class="submit-success" id="login-success">
+                    ¡Iniciando sesión correctamente!
+                </div>
+            </form>
+           
+            <div class="toggle-form">
+                ¿No tienes una cuenta? <a class="toggle-link" id="show-register">Regístrate</a>
+            </div>
+        </div>
+       
+        <!-- Register Form -->
+        <div class="register-container">
+            <div class="form-title">
+                <button class="back-btn" id="back-to-login">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1>Crear Cuenta</h1>
+                <div style="width: 24px;"></div> <!-- Para mantener el título centrado -->
+            </div>
+           
+            <form id="register-form">
+                <div class="input-group" id="firstname-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="firstname" placeholder="Nombre" required>
+                    <i class="fas fa-check validation-icon valid-icon"></i>
+                    <i class="fas fa-times validation-icon invalid-icon"></i>
+                    <div class="error-message">Por favor ingresa tu nombre</div>
+                </div>
+               
+                <div class="input-group" id="lastname-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="lastname" placeholder="Apellido" required>
+                    <i class="fas fa-check validation-icon valid-icon"></i>
+                    <i class="fas fa-times validation-icon invalid-icon"></i>
+                    <div class="error-message">Por favor ingresa tu apellido</div>
+                </div>
+               
+                <div class="input-group" id="email-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder="Correo electrónico" required>
+                    <i class="fas fa-check validation-icon valid-icon"></i>
+                    <i class="fas fa-times validation-icon invalid-icon"></i>
+                    <div class="error-message">Por favor ingresa un correo electrónico válido</div>
+                </div>
+               
+                <div class="input-group" id="password-group">
+                    <i class="fas fa-lock"></i>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" placeholder="Contraseña" required>
+                        <button type="button" class="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <i class="fas fa-check validation-icon valid-icon"></i>
+                    <i class="fas fa-times validation-icon invalid-icon"></i>
+                    <div class="error-message">La contraseña no cumple con los requisitos</div>
+                   
+                    <div class="password-requirements" id="password-requirements">
+                        <div class="requirement" id="req-length">
+                            <i class="fas fa-circle"></i> Mínimo 8 caracteres
+                        </div>
+                        <div class="requirement" id="req-uppercase">
+                            <i class="fas fa-circle"></i> Al menos una mayúscula
+                        </div>
+                        <div class="requirement" id="req-lowercase">
+                            <i class="fas fa-circle"></i> Al menos una minúscula
+                        </div>
+                        <div class="requirement" id="req-number">
+                            <i class="fas fa-circle"></i> Al menos un número
+                        </div>
+                        <div class="requirement" id="req-special">
+                            <i class="fas fa-circle"></i> Al menos un carácter especial
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="input-group" id="confirm-password-group">
+                    <i class="fas fa-lock"></i>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirm-password" placeholder="Confirmar contraseña" required>
+                        <button type="button" class="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <i class="fas fa-check validation-icon valid-icon"></i>
+                    <i class="fas fa-times validation-icon invalid-icon"></i>
+                    <div class="error-message">Las contraseñas no coinciden</div>
+                </div>
+               
+                <button type="submit" id="register-btn">Crear Cuenta</button>
+               
+                <div class="submit-success" id="register-success">
+                    ¡Cuenta creada correctamente!
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
