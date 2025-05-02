@@ -38,11 +38,11 @@ export function ExportButton({ data, filename }: ExportButtonProps) {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 bg-white text-secondary-dark hover:bg-background rounded-lg text-sm border border-secondary/20"
+        className="flex items-center gap-2 px-3 py-2 bg-primary text-white hover:bg-primary-dark rounded-lg text-sm shadow-lg sm:shadow-none sm:bg-white sm:text-secondary-dark sm:hover:bg-background sm:border sm:border-secondary/20 transition-colors"
       >
         <Download className="w-4 h-4" />
-        Exportar
-        <ChevronDown className="w-4 h-4" />
+        <span className="sm:inline">Exportar</span>
+        <ChevronDown className="w-4 h-4 hidden sm:block" />
       </button>
 
       {isOpen && (
@@ -51,7 +51,7 @@ export function ExportButton({ data, filename }: ExportButtonProps) {
             className="fixed inset-0 z-30"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-secondary/10 z-40">
+          <div className="absolute bottom-full right-0 sm:bottom-auto sm:top-full mb-2 sm:mb-0 sm:mt-2 w-48 bg-white rounded-lg shadow-lg border border-secondary/10 z-40">
             <button
               onClick={exportToExcel}
               className="flex items-center gap-2 w-full px-4 py-2 text-sm text-secondary-dark hover:bg-background"

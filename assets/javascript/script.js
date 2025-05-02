@@ -1,96 +1,165 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const statsContainer = document.getElementById("stats-container")
+  try {
+    console.log("🚀 Iniciando aplicación...")
 
-  const productos = await obtenerProductos()
-  const pedidos = await obtenerPedidos()
+    const statsContainer = document.getElementById("stats-container")
+    const chartsContainer = document.getElementById("charts-container")
 
-  // Mostrar tarjetas de productos
-  productos.forEach(producto => {
+    if (!statsContainer || !chartsContainer) {
+      console.error("❌ Error: No se encontraron los contenedores necesarios.")
+      return
+    }
+
+    // Obtener datos simultáneamente
+    const [productos, pedidos] = await Promise.all([obtenerProductos(), obtenerPedidos()])
+
+    // Verificar que los datos se obtuvieron correctamente
+    console.log("📊 Productos cargados:", productos)
+    console.log("📈 Pedidos cargados:", pedidos)
+
+    if (!productos.length) {
+      console.warn("⚠️ No hay productos disponibles.")
+    }
+
+    if (!pedidos.length) {
+      console.warn("⚠️ No hay pedidos disponibles.")
+    }
+
+    // Renderizar productos y gráficos
+    renderizarProductos(productos, statsContainer)
+    renderizarGraficos(pedidos, chartsContainer)
+
+    // Configurar modo oscuro
+    configurarModoOscuro()
+  } catch (error) {
+    console.error("❌ Error al cargar los datos:", error)
+  }
+})
+
+/** 🔹 Renderizar tarjetas de productos */
+function renderizarProductos(productos, contenedor) {
+  if (!contenedor) {
+    console.error("❌ Error: Contenedor de productos no encontrado.")
+    return
+  }
+
+  contenedor.innerHTML = ""
+
+  productos.forEach(({ nombre, categoria, stock, precio, utilidad }) => {
     const card = document.createElement("div")
     card.classList.add("stat-card")
     card.innerHTML = `
-      <h3>${producto.nombre}</h3>
-      <p><strong>Categoría:</strong> ${producto.categoria}</p>
-      <p><strong>Stock:</strong> ${producto.stock}</p>
-      <p><strong>Precio:</strong> $${producto.precio}</p>
+      <h3>${nombre}</h3>
+      <p><strong>Categoría:</strong> ${categoria}</p>
+      <p><strong>Stock:</strong> ${stock}</p>
+      <p><strong>Precio:</strong> $${precio}</p>
+      <p><strong>Utilidad:</strong> $${utilidad}</p>
     `
-    statsContainer.appendChild(card)
+    contenedor.appendChild(card)
+  })
+}
+
+/** 🔹 Renderizar gráficos con Chart.js */
+function renderizarGraficos(pedidos, contenedor) {
+  if (!contenedor) {
+    console.error("❌ Error: Contenedor de gráficos no encontrado.")
+    return
+  }
+
+  console.log("📊 Renderizando gráficos...")
+
+  const colores = { Samsung: "#4CC9F0", Apple: "#FF006E", Bose: "#F4A261" }
+
+  contenedor.innerHTML = ""
+
+  pedidos.forEach(({ proveedor, completados, total }) => {
+    if (!colores[proveedor]) {
+      console.warn(`⚠️ No se encontró un color definido para ${proveedor}`)
+      return
+    }
+
+    const canvas = document.createElement("canvas")
+    canvas.id = `chart-${proveedor}`
+    canvas.classList.add("chart-item")
+    contenedor.appendChild(canvas)
+
+    console.log(`✅ Creando gráfico para ${proveedor} en ${canvas.id}`)
+    crearGrafico(canvas, completados, total, colores[proveedor])
+  })
+}
+
+/** 🔹 Crear un gráfico Doughnut con Chart.js */
+function crearGrafico(canvas, completados, total, color) {
+  if (!canvas) {
+    console.error("❌ Error: No se encontró el canvas para el gráfico.")
+    return
+  }
+
+  const ctx = canvas.getContext("2d")
+  if (!ctx) {
+    console.error(`❌ Error: No se pudo obtener el contexto 2D para ${canvas.id}`)
+    return
+  }
+
+  console.log(`📈 Renderizando gráfico para ${canvas.id}...`)
+
+  // Destruir gráfico previo si existe
+  if (canvas.chartInstance) {
+    canvas.chartInstance.destroy()
+  }
+
+  canvas.chartInstance = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["Completados", "Pendientes"],
+      datasets: [{
+        data: [completados, total - completados],
+        backgroundColor: [color, "#333"],
+        borderWidth: 2,
+        borderColor: "#ffffff22"
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,  
+      aspectRatio: 1.5,
+      plugins: { legend: { display: false } }
+    }
   })
 
-  // Crear gráficos de pedidos
-  const colores = {
-    Samsung: "#4CC9F0",
-    Apple: "#FF006E",
-    Bose: "#F4A261"
+  // Agregar tiempo de espera para verificar tamaño
+  setTimeout(() => {
+    console.log(`📏 Tamaño final de ${canvas.id}:`, canvas.clientWidth, canvas.clientHeight)
+  }, 500)
+}
+
+/** 🔹 Configurar Modo Oscuro */
+function configurarModoOscuro() {
+  const toggleThemeButton = document.getElementById("toggle-theme")
+  if (!toggleThemeButton) {
+    console.error("❌ Error: No se encontró el botón de modo oscuro.")
+    return
   }
 
-  function crearGrafico(idCanvas, proveedor) {
-    const pedido = pedidos.find(p => p.proveedor === proveedor)
-    if (!pedido) return
-
-    new Chart(document.getElementById(idCanvas).getContext("2d"), {
-      type: "doughnut",
-      data: {
-        labels: ["Completados", "Pendientes"],
-        datasets: [{
-          data: [pedido.completados, pedido.total - pedido.completados],
-          backgroundColor: [colores[proveedor], "#333"],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { display: false } }
-      }
-    })
+  const aplicarModoOscuro = () => {
+    document.body.classList.toggle("dark-mode")
+    localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light")
   }
 
-  crearGrafico("chartSamsung", "Samsung")
-  crearGrafico("chartApple", "Apple")
-  crearGrafico("chartBose", "Bose")
-})
-
-document.addEventListener("DOMContentLoaded", async () => {
-  const pedidos = await obtenerPedidos()
-
-  // Definir colores representativos para cada marca
-  const colores = {
-    Samsung: "#4CC9F0", // Azul claro
-    Apple: "#FF006E", // Rosa intenso
-    Bose: "#F4A261" // Naranja
+  // Aplicar tema guardado
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark-mode")
   }
 
-  // Función para generar el gráfico de cada proveedor
-  function crearGrafico(idCanvas, proveedor) {
-    const pedido = pedidos.find(p => p.proveedor === proveedor)
-    if (!pedido) return
+  toggleThemeButton.addEventListener("click", aplicarModoOscuro)
+}
 
-    const ctx = document.getElementById(idCanvas).getContext("2d")
+/** 🔹 Verificar si Chart.js está cargado */
+console.log("📢 Chart.js cargado:", typeof Chart !== "undefined")
 
-    new Chart(ctx, {
-      type: "doughnut",
-      data: {
-        labels: ["Completados", "Pendientes"],
-        datasets: [{
-          data: [pedido.completados, pedido.total - pedido.completados],
-          backgroundColor: [colores[proveedor], "#333"], // Color de la marca + gris oscuro
-          borderWidth: 2,
-          borderColor: "#ffffff22" // Bordes suaves con transparencia
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            display: false
-          }
-        }
-      }
-    })
-  }
-
-  // Crear gráficos para cada proveedor
-  crearGrafico("chartSamsung", "Samsung")
-  crearGrafico("chartApple", "Apple")
-  crearGrafico("chartBose", "Bose")
-})
+// Verificar si los canvas tienen dimensiones
+setTimeout(() => {
+  document.querySelectorAll("canvas").forEach(canvas => {
+    console.log(`📏 Tamaño de ${canvas.id}:`, canvas.clientWidth, canvas.clientHeight)
+  })
+}, 1000)
