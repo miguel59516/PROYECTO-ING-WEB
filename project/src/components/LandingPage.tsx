@@ -1,0 +1,195 @@
+import React from 'react';
+import { BarChart3, ArrowRight, LineChart, Users, Bell, Search, Package, DollarSign, Shield, Zap, TrendingUp, BarChart } from 'lucide-react';
+
+interface LandingPageProps {
+  onEnterDashboard: () => void;
+}
+
+export function LandingPage({ onEnterDashboard }: LandingPageProps) {
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <nav className="bg-white border-b border-secondary/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <BarChart3 className="w-8 h-8 text-primary" />
+              <span className="text-xl font-bold text-secondary-dark">ApexBuy</span>
+            </div>
+            <button
+              onClick={onEnterDashboard}
+              className="px-4 py-2 text-primary hover:text-primary-dark transition-colors"
+            >
+              Iniciar Sesión
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div className="relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          <div className="text-center lg:text-left lg:flex lg:items-center lg:gap-12">
+            <div className="lg:flex-1">
+              <h1 className="text-4xl sm:text-5xl font-bold text-secondary-dark leading-tight mb-6">
+                Optimiza tus precios con
+                <span className="text-primary block">Inteligencia de Mercado</span>
+              </h1>
+              <p className="text-xl text-secondary mb-8 max-w-2xl">
+                Toma decisiones basadas en datos en tiempo real. Monitorea precios, analiza competidores y maximiza tus ganancias con ApexBuy.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <button
+                  onClick={onEnterDashboard}
+                  className="flex items-center justify-center gap-2 px-8 py-4 text-lg font-medium rounded-lg text-white bg-primary hover:bg-primary-dark transition-colors"
+                >
+                  Comenzar Ahora
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={onEnterDashboard}
+                  className="flex items-center justify-center gap-2 px-8 py-4 text-lg font-medium rounded-lg text-secondary-dark border border-secondary/20 hover:bg-white transition-colors"
+                >
+                  Ver Demo
+                </button>
+              </div>
+            </div>
+            <div className="hidden lg:block lg:flex-1">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10" />
+                <img
+                  src="https://images.pexels.com/photos/7681091/pexels-photo-7681091.jpeg"
+                  alt="Dashboard Preview"
+                  className="rounded-lg shadow-2xl"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Features Section */}
+      <div className="bg-white py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-secondary-dark mb-4">Todo lo que necesitas para el éxito</h2>
+            <p className="text-xl text-secondary">Una plataforma completa para el análisis y gestión de precios</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-background rounded-xl p-6">
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <LineChart className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-secondary-dark mb-2">Análisis en Tiempo Real</h3>
+              <p className="text-secondary">Monitorea cambios de precios y tendencias del mercado al instante.</p>
+            </div>
+
+            <div className="bg-background rounded-xl p-6">
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <Users className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-secondary-dark mb-2">Análisis Competitivo</h3>
+              <p className="text-secondary">Compara tus precios con la competencia y mantente siempre competitivo.</p>
+            </div>
+
+            <div className="bg-background rounded-xl p-6">
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <Bell className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-secondary-dark mb-2">Alertas Inteligentes</h3>
+              <p className="text-secondary">Recibe notificaciones sobre cambios importantes en el mercado.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Preview Section */}
+      <div className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-secondary-dark mb-4">Una experiencia diseñada para ti</h2>
+            <p className="text-xl text-secondary">Descubre todas las herramientas que tenemos para tu negocio</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="order-2 lg:order-1">
+              <div className="space-y-8">
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Search className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-secondary-dark mb-2">Búsqueda Avanzada</h3>
+                    <p className="text-secondary">Encuentra rápidamente los productos que necesitas analizar con filtros inteligentes.</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <TrendingUp className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-secondary-dark mb-2">Tendencias de Mercado</h3>
+                    <p className="text-secondary">Visualiza las tendencias de precios y toma decisiones informadas.</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <BarChart className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-secondary-dark mb-2">Reportes Detallados</h3>
+                    <p className="text-secondary">Genera informes completos sobre el rendimiento de tus productos.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="order-1 lg:order-2">
+              <div className="bg-white p-6 rounded-xl shadow-xl">
+                <div className="aspect-w-16 aspect-h-9 bg-background rounded-lg overflow-hidden">
+                  <img
+                    src="https://images.pexels.com/photos/7681101/pexels-photo-7681101.jpeg"
+                    alt="Dashboard Features"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="bg-primary">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">¿Listo para optimizar tus precios?</h2>
+            <p className="text-xl text-white/80 mb-8">Únete a cientos de empresas que ya están usando ApexBuy</p>
+            <button
+              onClick={onEnterDashboard}
+              className="inline-flex items-center gap-2 px-8 py-4 text-lg font-medium rounded-lg text-primary bg-white hover:bg-white/90 transition-colors"
+            >
+              Comenzar Ahora
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-secondary/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <BarChart3 className="w-8 h-8 text-primary" />
+              <span className="text-xl font-bold text-secondary-dark">ApexBuy</span>
+            </div>
+            <p className="text-secondary">© 2024 ApexBuy. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

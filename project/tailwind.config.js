@@ -14,7 +14,11 @@ export default {
           dark: '#1D1D1B'
         },
         background: '#F6F6F6'
-      }
+      },
+      aspectRatio: {
+        'w-16': 16,
+        'h-9': 9,
+      },
     },
   },
   plugins: [],

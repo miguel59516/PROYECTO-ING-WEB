@@ -5,67 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Electrodomésticos</title>
   <link rel="stylesheet" href="./assets/css/styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script defer src="./assets/javascript/data.js"></script>
   <script defer src="./assets/javascript/script.js"></script>
 </head>
 <body>
 
-  <div class="dashboard-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <h2 class="logo">📊 Dashboard</h2>
-      <nav class="menu">
-        <ul>
-          <li class="active"><a href="#">🏠 Inicio</a></li>
-          <li><a href="#">📈 Estadísticas</a></li>
-          <li><a href="#">📅 Pedidos</a></li>
-          <li><a href="#">📦 Productos</a></li>
-          <li><a href="#">⚙️ Configuración</a></li>
-          <li><a href="#">❓ Soporte</a></li>
-        </ul>
-      </nav>
-    </aside>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2 class="logo">📊 Dashboard</h2>
+    <nav class="menu">
+      <ul>
+        <li class="active"><a href="#"><i class="fa-solid fa-house"></i> Inicio</a></li>
+        <li><a href="#"><i class="fa-solid fa-chart-line"></i> Estadísticas</a></li>
+        <li><a href="#"><i class="fa-solid fa-box"></i> Pedidos</a></li>
+        <li><a href="#"><i class="fa-solid fa-tags"></i> Productos</a></li>
+        <li><a href="#"><i class="fa-solid fa-cog"></i> Configuración</a></li>
+        <li><a href="#"><i class="fa-solid fa-question-circle"></i> Soporte</a></li>
+      </ul>
+    </nav>
+    <button id="toggle-theme">🌙 Modo Oscuro</button>
+  </aside>
 
-    <!-- Contenido Principal -->
-    <main class="main-content">
-      <!-- Topbar -->
-      <header class="topbar">
-        <input type="text" placeholder="🔍 Buscar..." class="search-bar">
-        <div class="user-info">
-          <span>USER</span>
-          <img src="user-avatar.png" alt="Avatar de usuario" class="avatar">
-        </div>
-      </header>
+  <!-- Contenido Principal -->
+  <main class="main-content">
+    <header class="topbar">
+      <input type="text" placeholder="🔍 Buscar..." class="search-bar">
+      <div class="user-info">
+        <span>USER</span>
+        <img src="./assets/img/user-avatar.webp" alt="Avatar" class="avatar" loading="lazy">
+      </div>
+    </header>
 
-      <!-- Sección de Productos Destacados -->
-      <section class="dashboard-content">
-        <h2>📦 Productos Destacados</h2>
-        <div class="stats-container" id="stats-container"></div>
-      </section>
+    <!-- Sección de Productos Destacados -->
+    <section class="dashboard-content">
+      <h2>📦 Productos Destacados</h2>
+      <div class="stats-container" id="stats-container"></div>
+    </section>
 
-      <!-- Sección de Pedidos a Proveedores -->
-      <section class="dashboard-content">
-        <h2>📊 Pedidos a Proveedores</h2>
-        <div class="charts-container">
-          <div class="chart-item">
-            <canvas id="chartSamsung"></canvas>
-            <p>📡 Samsung</p>
-          </div>
-          <div class="chart-item">
-            <canvas id="chartApple"></canvas>
-            <p>🍏 Apple</p>
-          </div>
-          <div class="chart-item">
-            <canvas id="chartBose"></canvas>
-            <p>🔊 Bose</p>
-          </div>
-        </div>
-      </section>
+    <!-- Sección de Gráficos -->
+    <section class="dashboard-content">
+      <h2>📊 Pedidos a Proveedores</h2>
+      <div id="charts-container"></div>
+    </section>
+  </main>
 
-    </main>
-  </div>
+ <!-- ✅ Librerías externas primero -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ✅ Luego carga de datos -->
+<script defer src="./assets/javascript/data.js"></script>
+
+<!-- ✅ Finalmente, el script principal -->
+<script defer src="./assets/javascript/script.js"></script>
 
 </body>
 </html>
+
 
