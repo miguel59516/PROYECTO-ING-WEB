@@ -73,7 +73,7 @@ export function Dashboard() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [timeRange, setTimeRange] = useState('7d');
   const [productFilter, setProductFilter] = useState('all');
-  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('grid');
   const debouncedSearch = useDebounce(searchTerm, 300);
 
   const getAlertIcon = (type: string) => {
@@ -163,11 +163,18 @@ export function Dashboard() {
 
       {/* Mobile Menu Overlay */}
       {showMobileMenu && (
-        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setShowMobileMenu(false)} />
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden" 
+          onClick={() => setShowMobileMenu(false)}
+        />
       )}
 
       {/* Mobile Menu */}
-      <div className={`fixed inset-y-0 left-0 w-64 md:w-80 bg-white transform ${showMobileMenu ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-200 ease-in-out z-50 lg:hidden flex flex-col`}>
+      <div 
+        className={`fixed inset-y-0 left-0 w-[280px] bg-white transform ${
+          showMobileMenu ? 'translate-x-0' : '-translate-x-full'
+        } transition-transform duration-200 ease-in-out z-50 lg:hidden overflow-y-auto flex flex-col`}
+      >
         <div className="p-4 border-b border-secondary/10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -231,31 +238,33 @@ export function Dashboard() {
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Header */}
         <header className="bg-white border-b border-secondary/10 sticky top-0 z-30">
-          <div className="px-4 py-4">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setShowMobileMenu(!showMobileMenu)}
-                className="lg:hidden p-2 hover:bg-background rounded-lg"
-              >
-                <Menu className="w-6 h-6 text-secondary-dark" />
-              </button>
+          <div className="p-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="flex items-center gap-4 flex-1">
+                <button
+                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                  className="lg:hidden p-2 hover:bg-background rounded-lg"
+                >
+                  <Menu className="w-6 h-6 text-secondary-dark" />
+                </button>
 
-              <div className="flex-1 max-w-xl relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary" />
-                <input
-                  type="text"
-                  placeholder="Buscar productos..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full border border-secondary/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary" />
+                  <input
+                    type="text"
+                    placeholder="Buscar productos..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-secondary/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  />
+                </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 justify-between sm:justify-end">
                 <select 
                   value={timeRange}
                   onChange={(e) => setTimeRange(e.target.value)}
-                  className="border border-secondary/20 rounded-lg px-3 py-2 text-secondary-dark focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="flex-1 sm:flex-none border border-secondary/20 rounded-lg px-3 py-2 text-secondary-dark focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
                 >
                   {timeRanges.map(range => (
                     <option key={range.value} value={range.value}>
@@ -275,7 +284,7 @@ export function Dashboard() {
                     </span>
                   </button>
                   {showAlerts && (
-                    <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-lg border border-secondary/10">
+                    <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-96 bg-white rounded-lg shadow-lg border border-secondary/10 max-h-[80vh] overflow-y-auto">
                       <div className="p-4">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="font-semibold">Alertas Recientes</h3>
@@ -338,14 +347,14 @@ export function Dashboard() {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 p-6">
-          <div className="max-w-7xl mx-auto">
+        <main className="flex-1 p-4">
+          <div className="max-w-7xl mx-auto space-y-6">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {mockData.stats.map((stat) => {
                 const Icon = stat.icon;
                 return (
-                  <div key={stat.id} className="bg-white p-6 rounded-lg border border-secondary/10">
+                  <div key={stat.id} className="bg-white p-4 sm:p-6 rounded-lg border border-secondary/10">
                     <div className="flex items-center justify-between mb-4">
                       <div className="p-2 bg-background rounded-lg">
                         <Icon className="w-6 h-6 text-secondary-dark" />
@@ -357,16 +366,17 @@ export function Dashboard() {
                       </Tooltip>
                     </div>
                     <p className="text-secondary mb-1">{stat.label}</p>
-                    <p className="text-2xl font-bold text-secondary-dark">{stat.value}</p>
+                    <p className="text-xl sm:text-2xl font-bold text-secondary-dark">{stat.value}</p>
                   </div>
                 );
               })}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Price History Chart */}
-              <div className="lg:col-span-2 bg-white p-6 rounded-lg border border-secondary/10">
-                <div className="flex items-center justify-between mb-6">
+              <div className="lg:col-span-2 bg-white p-4 sm:p-6 rounded-lg border border-secondary/10">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                   <div>
                     <h2 className="text-lg font-semibold text-secondary-dark">Tendencias de Precios</h2>
                     <p className="text-sm text-secondary">Comparación últimos 30 días</p>
@@ -375,7 +385,7 @@ export function Dashboard() {
                     <select 
                       value={productFilter}
                       onChange={(e) => setProductFilter(e.target.value)}
-                      className="border border-secondary/20 rounded-lg px-3 py-2 text-secondary-dark focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      className="flex-1 sm:flex-none border border-secondary/20 rounded-lg px-3 py-2 text-secondary-dark focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
                     >
                       {productFilters.map(filter => (
                         <option key={filter.value} value={filter.value}>
@@ -386,7 +396,7 @@ export function Dashboard() {
                     <ExportButton data={mockData.priceHistory} filename="price-history" />
                   </div>
                 </div>
-                <div className="h-[300px] md:h-[400px]">
+                <div className="h-[300px] sm:h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={mockData.priceHistory}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
@@ -462,7 +472,7 @@ export function Dashboard() {
               </div>
 
               {/* Competitors Analysis */}
-              <div className="bg-white p-6 rounded-lg border border-secondary/10">
+              <div className="bg-white p-4 sm:p-6 rounded-lg border border-secondary/10">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h2 className="text-lg font-semibold text-secondary-dark">Análisis de Competencia</h2>
@@ -502,33 +512,35 @@ export function Dashboard() {
 
             {/* Products Table */}
             <div className="bg-white rounded-lg border border-secondary/10">
-              <div className="p-6 border-b border-secondary/10 flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold text-secondary-dark">Productos</h2>
-                  <p className="text-sm text-secondary">Gestiona tu catálogo de productos</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 border border-secondary/20 rounded-lg p-1">
-                    <button
-                      onClick={() => setViewMode('grid')}
-                      className={`p-1 rounded ${viewMode === 'grid' ? 'bg-background' : ''}`}
-                    >
-                      <Grid className="w-5 h-5 text-secondary-dark" />
-                    </button>
-                    <button
-                      onClick={() => setViewMode('list')}
-                      className={`p-1 rounded ${viewMode === 'list' ? 'bg-background' : ''}`}
-                    >
-                      <List className="w-5 h-5 text-secondary-dark" />
+              <div className="p-4 sm:p-6 border-b border-secondary/10">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-lg font-semibold text-secondary-dark">Productos</h2>
+                    <p className="text-sm text-secondary">Gestiona tu catálogo de productos</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 border border-secondary/20 rounded-lg p-1">
+                      <button
+                        onClick={() => setViewMode('grid')}
+                        className={`p-1 rounded ${viewMode === 'grid' ? 'bg-background' : ''}`}
+                      >
+                        <Grid className="w-5 h-5 text-secondary-dark" />
+                      </button>
+                      <button
+                        onClick={() => setViewMode('list')}
+                        className={`p-1 rounded ${viewMode === 'list' ? 'bg-background' : ''}`}
+                      >
+                        <List className="w-5 h-5 text-secondary-dark" />
+                      </button>
+                    </div>
+                    <button className="flex items-center gap-2 px-3 py-2 border border-secondary/20 rounded-lg hover:bg-background">
+                      <Filter className="w-5 h-5 text-secondary-dark" />
+                      <span className="text-secondary-dark">Filtros</span>
                     </button>
                   </div>
-                  <button className="flex items-center gap-2 px-3 py-2 border border-secondary/20 rounded-lg hover:bg-background">
-                    <Filter className="w-5 h-5 text-secondary-dark" />
-                    <span className="text-secondary-dark">Filtros</span>
-                  </button>
                 </div>
               </div>
-              <ProductsTable products={mockData.products} viewMode={viewMode} />
+              <ProductsTable products={mockData.products} viewMode={viewMode} searchTerm={debouncedSearch} />
             </div>
           </div>
         </main>

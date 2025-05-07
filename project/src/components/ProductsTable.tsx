@@ -15,20 +15,39 @@ interface Product {
 interface ProductsTableProps {
   products: Product[];
   viewMode: 'list' | 'grid';
+  searchTerm?: string;
 }
 
 type SortField = 'name' | 'price' | 'provider' | 'profitability';
 type SortOrder = 'asc' | 'desc';
 
-export function ProductsTable({ products, viewMode }: ProductsTableProps) {
+export function ProductsTable({ products, viewMode, searchTerm = '' }: ProductsTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
   const itemsPerPage = viewMode === 'grid' ? 12 : 10;
-  const totalPages = Math.ceil(products.length / itemsPerPage);
 
-  const sortedProducts = [...products].sort((a, b) => {
+  // Filter products based on search term
+  const filteredProducts = products.filter(product => {
+    if (!searchTerm) return true;
+    
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      product.name.toLowerCase().includes(searchLower) ||
+      product.provider.toLowerCase().includes(searchLower) ||
+      product.category.toLowerCase().includes(searchLower)
+    );
+  });
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  // Reset to first page when search term changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
     const aValue = a[sortField];
     const bValue = b[sortField];
     const multiplier = sortOrder === 'asc' ? 1 : -1;
@@ -121,8 +140,8 @@ export function ProductsTable({ products, viewMode }: ProductsTableProps) {
         <div className="flex items-center justify-between px-4 py-3 border-t border-secondary/10">
           <div className="text-sm text-secondary">
             Mostrando {((currentPage - 1) * itemsPerPage) + 1} a{' '}
-            {Math.min(currentPage * itemsPerPage, products.length)} de{' '}
-            {products.length} productos
+            {Math.min(currentPage * itemsPerPage, filteredProducts.length)} de{' '}
+            {filteredProducts.length} productos
           </div>
           <div className="flex gap-1">
             <button
@@ -212,8 +231,8 @@ export function ProductsTable({ products, viewMode }: ProductsTableProps) {
       <div className="flex items-center justify-between px-4 py-3 border-t border-secondary/10">
         <div className="text-sm text-secondary">
           Mostrando {((currentPage - 1) * itemsPerPage) + 1} a{' '}
-          {Math.min(currentPage * itemsPerPage, products.length)} de{' '}
-          {products.length} productos
+          {Math.min(currentPage * itemsPerPage, filteredProducts.length)} de{' '}
+          {filteredProducts.length} productos
         </div>
         <div className="flex gap-1">
           <button
