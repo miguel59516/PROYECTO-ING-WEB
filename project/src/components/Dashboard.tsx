@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 import { BarChart3, Bell, Search, Package, DollarSign, AlertTriangle, ArrowUpRight, ArrowDownRight, Home, BarChart, Users, Settings, Menu, X, Grid, List, Filter, Clock, TrendingUp, AlertOctagon } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { Tooltip } from './Tooltip';
 import { ExportButton } from './ExportButton';
 import { ProductsTable } from './ProductsTable';
 import { useDebounce } from '../hooks/useDebounce';
+import { CompetitorsHeatMap } from './CompetitorsHeatMap';
 
 const mockData = {
   stats: [
@@ -20,11 +23,81 @@ const mockData = {
     highest: Math.random() * 120 + 60,
   })),
   competitors: [
-    { id: 'D', name: 'Competidor D', price: 91.99, change: '+7.00' },
-    { id: 'A', name: 'Competidor A', price: 89.99, change: '+5.00' },
-    { id: 'B', name: 'Competidor B', price: 88.99, change: '+1.00' },
-    { id: 'C', name: 'Competidor C', price: 82.99, change: '-2.00' },
-    { id: 'E', name: 'Competidor E', price: 79.99, change: '-5.00' },
+    {
+      id: 'A',
+      name: 'Competidor A',
+      price: 89.99,
+      change: '+5.00',
+      metrics: {
+        price: 85,
+        stock: 90,
+        variety: 75,
+        delivery: 80,
+        rating: 95,
+        market: 70,
+        promotion: 65
+      }
+    },
+    {
+      id: 'B',
+      name: 'Competidor B',
+      price: 88.99,
+      change: '+1.00',
+      metrics: {
+        price: 75,
+        stock: 85,
+        variety: 80,
+        delivery: 70,
+        rating: 85,
+        market: 75,
+        promotion: 70
+      }
+    },
+    {
+      id: 'C',
+      name: 'Competidor C',
+      price: 82.99,
+      change: '-2.00',
+      metrics: {
+        price: 90,
+        stock: 65,
+        variety: 60,
+        delivery: 85,
+        rating: 80,
+        market: 60,
+        promotion: 75
+      }
+    },
+    {
+      id: 'D',
+      name: 'Competidor D',
+      price: 91.99,
+      change: '+7.00',
+      metrics: {
+        price: 70,
+        stock: 95,
+        variety: 85,
+        delivery: 75,
+        rating: 90,
+        market: 85,
+        promotion: 80
+      }
+    },
+    {
+      id: 'E',
+      name: 'Competidor E',
+      price: 79.99,
+      change: '-5.00',
+      metrics: {
+        price: 95,
+        stock: 70,
+        variety: 65,
+        delivery: 65,
+        rating: 75,
+        market: 65,
+        promotion: 60
+      }
+    }
   ],
   alerts: [
     { id: 1, product: 'Producto A', change: '+15%', type: 'price-increase', time: '5m', priority: 'high' },
@@ -74,7 +147,62 @@ export function Dashboard() {
   const [timeRange, setTimeRange] = useState('7d');
   const [productFilter, setProductFilter] = useState('all');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('grid');
+  const [activeSection, setActiveSection] = useState('resumen');
   const debouncedSearch = useDebounce(searchTerm, 300);
+
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    if (!hasSeenOnboarding) {
+      const driverObj = driver({
+        showProgress: true,
+        steps: [
+          {
+            element: '#dashboard-menu',
+            popover: {
+              title: 'Menú Principal',
+              description: 'Aquí encontrarás todas las secciones principales del dashboard.',
+              side: 'right',
+            }
+          },
+          {
+            element: '#search-bar',
+            popover: {
+              title: 'Búsqueda de Productos',
+              description: 'Busca rápidamente cualquier producto en tu catálogo.',
+              side: 'bottom',
+            }
+          },
+          {
+            element: '#notifications',
+            popover: {
+              title: 'Centro de Notificaciones',
+              description: 'Mantente al día con las alertas y cambios importantes.',
+              side: 'left',
+            }
+          },
+          {
+            element: '#stats-grid',
+            popover: {
+              title: 'Estadísticas Principales',
+              description: 'Visualiza los indicadores más importantes de tu negocio.',
+              side: 'bottom',
+            }
+          },
+          {
+            element: '#price-trends',
+            popover: {
+              title: 'Tendencias de Precios',
+              description: 'Analiza la evolución de precios y competidores en el tiempo.',
+              side: 'top',
+            }
+          }
+        ]
+      });
+
+      driverObj.drive();
+      localStorage.setItem('hasSeenOnboarding', 'true');
+    }
+  }, []);
 
   const getAlertIcon = (type: string) => {
     switch (type) {
@@ -106,251 +234,60 @@ export function Dashboard() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-background flex">
-      {/* Sidebar - Desktop */}
-      <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-secondary/10">
-        <div className="p-4 border-b border-secondary/10">
-          <div className="flex items-center gap-3">
-            <BarChart3 className="w-8 h-8 text-primary" />
-            <span className="text-xl font-bold text-secondary-dark">ApexBuy</span>
-          </div>
-        </div>
-        <nav className="flex-1 p-4">
-          <ul className="space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <li key={item.label}>
-                  <button 
-                    className={`flex items-center gap-3 w-full p-3 rounded-lg text-base transition-colors ${
-                      item.active 
-                        ? 'bg-primary/10 text-primary' 
-                        : 'text-secondary-dark hover:bg-background'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span>{item.label}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-        <div className="p-4 border-t border-secondary/10">
-          <div className="bg-background rounded-lg p-4">
-            <h3 className="font-semibold mb-2">Funciones Premium</h3>
-            <ul className="text-sm text-secondary space-y-2 mb-3">
-              <li className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" />
-                Análisis predictivo
-              </li>
-              <li className="flex items-center gap-2">
-                <BarChart className="w-4 h-4" />
-                Reportes avanzados
-              </li>
-              <li className="flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                Análisis competitivo
-              </li>
-            </ul>
-            <button className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition-colors">
-              Actualizar Ahora
-            </button>
-          </div>
-        </div>
-      </aside>
-
-      {/* Mobile Menu Overlay */}
-      {showMobileMenu && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden" 
-          onClick={() => setShowMobileMenu(false)}
-        />
-      )}
-
-      {/* Mobile Menu */}
-      <div 
-        className={`fixed inset-y-0 left-0 w-[280px] bg-white transform ${
-          showMobileMenu ? 'translate-x-0' : '-translate-x-full'
-        } transition-transform duration-200 ease-in-out z-50 lg:hidden overflow-y-auto flex flex-col`}
-      >
-        <div className="p-4 border-b border-secondary/10">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <BarChart3 className="w-8 h-8 text-primary" />
-              <span className="text-xl font-bold text-secondary-dark">ApexBuy</span>
-            </div>
-            <button
-              onClick={() => setShowMobileMenu(false)}
-              className="p-2 hover:bg-background rounded-lg"
-            >
-              <X className="w-6 h-6 text-secondary-dark" />
-            </button>
-          </div>
-        </div>
-        <nav className="flex-1 p-4">
-          <ul className="space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <li key={item.label}>
-                  <button 
-                    className={`flex items-center gap-3 w-full p-3 rounded-lg text-base transition-colors ${
-                      item.active 
-                        ? 'bg-primary/10 text-primary' 
-                        : 'text-secondary-dark hover:bg-background'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span>{item.label}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-        <div className="p-4 border-t border-secondary/10">
-          <div className="bg-background rounded-lg p-4">
-            <h3 className="font-semibold mb-2">Funciones Premium</h3>
-            <ul className="text-sm text-secondary space-y-2 mb-3">
-              <li className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" />
-                Análisis predictivo
-              </li>
-              <li className="flex items-center gap-2">
-                <BarChart className="w-4 h-4" />
-                Reportes avanzados
-              </li>
-              <li className="flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                Análisis competitivo
-              </li>
-            </ul>
-            <button className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition-colors">
-              Actualizar Ahora
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen">
-        {/* Header */}
-        <header className="bg-white border-b border-secondary/10 sticky top-0 z-30">
-          <div className="p-4">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <div className="flex items-center gap-4 flex-1">
-                <button
-                  onClick={() => setShowMobileMenu(!showMobileMenu)}
-                  className="lg:hidden p-2 hover:bg-background rounded-lg"
-                >
-                  <Menu className="w-6 h-6 text-secondary-dark" />
-                </button>
-
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary" />
-                  <input
-                    type="text"
-                    placeholder="Buscar productos..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-secondary/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'tendencias':
+        return (
+          <div className="bg-white p-6 rounded-lg border border-secondary/10">
+            <h2 className="text-2xl font-bold mb-6">Tendencias de Precios</h2>
+            <div className="h-[500px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={mockData.priceHistory}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={(value) => new Date(value).toLocaleDateString('es-CO', { month: 'short' })}
+                    stroke="#9CA3AF"
                   />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 justify-between sm:justify-end">
-                <select 
-                  value={timeRange}
-                  onChange={(e) => setTimeRange(e.target.value)}
-                  className="flex-1 sm:flex-none border border-secondary/20 rounded-lg px-3 py-2 text-secondary-dark focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
-                >
-                  {timeRanges.map(range => (
-                    <option key={range.value} value={range.value}>
-                      {range.label}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="relative">
-                  <button
-                    onClick={() => setShowAlerts(!showAlerts)}
-                    className="p-2 hover:bg-background rounded-lg relative"
-                  >
-                    <Bell className="w-5 h-5 text-secondary-dark" />
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-xs flex items-center justify-center rounded-full">
-                      {mockData.alerts.length}
-                    </span>
-                  </button>
-                  {showAlerts && (
-                    <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-96 bg-white rounded-lg shadow-lg border border-secondary/10 max-h-[80vh] overflow-y-auto">
-                      <div className="p-4">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="font-semibold">Alertas Recientes</h3>
-                          <button className="text-sm text-primary hover:text-primary-dark">
-                            Ver todas
-                          </button>
-                        </div>
-                        <div className="space-y-3">
-                          {mockData.alerts.map((alert) => (
-                            <div
-                              key={alert.id}
-                              className="flex items-center justify-between p-3 hover:bg-background rounded-lg cursor-pointer"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-full ${getAlertBg(alert.type)}`}>
-                                  {getAlertIcon(alert.type)}
-                                </div>
-                                <div>
-                                  <p className="font-medium text-secondary-dark">{alert.product}</p>
-                                  <div className="flex items-center gap-2 text-sm text-secondary">
-                                    <Clock className="w-3 h-3" />
-                                    <span>Hace {alert.time}</span>
-                                    {alert.change && (
-                                      <span className={alert.type === 'price-increase' ? 'text-red-500' : 'text-green-500'}>
-                                        {alert.change}
-                                      </span>
-                                    )}
-                                    {alert.stock && (
-                                      <span className="text-yellow-500">
-                                        {alert.stock}
-                                      </span>
-                                    )}
-                                    {alert.competitor && (
-                                      <span className="text-blue-500">
-                                        {alert.competitor}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className={`px-2 py-1 rounded text-xs ${
-                                alert.priority === 'high' 
-                                  ? 'bg-red-100 text-red-700'
-                                  : alert.priority === 'medium'
-                                    ? 'bg-yellow-100 text-yellow-700'
-                                    : 'bg-blue-100 text-blue-700'
-                              }`}>
-                                {alert.priority === 'high' ? 'Alta' : alert.priority === 'medium' ? 'Media' : 'Baja'}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+                  <YAxis stroke="#9CA3AF" />
+                  <RechartsTooltip />
+                  <Line type="monotone" dataKey="price" stroke="#E12613" strokeWidth={2} />
+                  <Line type="monotone" dataKey="competitors" stroke="#9CA3AF" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
-        </header>
-
-        {/* Main Content */}
-        <main className="flex-1 p-4">
-          <div className="max-w-7xl mx-auto space-y-6">
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        );
+      
+      case 'competidores':
+        return (
+          <div className="bg-white p-6 rounded-lg border border-secondary/10">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Análisis de Competencia</h2>
+                <p className="text-secondary">Comparativa detallada de competidores</p>
+              </div>
+              <ExportButton data={mockData.competitors} filename="competitors-analysis" />
+            </div>
+            <CompetitorsHeatMap competitors={mockData.competitors} />
+          </div>
+        );
+      
+      case 'productos':
+        return (
+          <div className="bg-white rounded-lg border border-secondary/10">
+            <div className="p-6 border-b border-secondary/10">
+              <h2 className="text-2xl font-bold mb-2">Catálogo de Productos</h2>
+              <p className="text-secondary">Gestiona y analiza todos tus productos</p>
+            </div>
+            <ProductsTable products={mockData.products} viewMode={viewMode} searchTerm={debouncedSearch} />
+          </div>
+        );
+      
+      default:
+        return (
+          <>
+            <div id="stats-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {mockData.stats.map((stat) => {
                 const Icon = stat.icon;
                 return (
@@ -371,10 +308,7 @@ export function Dashboard() {
                 );
               })}
             </div>
-
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Price History Chart */}
+            <div id="price-trends" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 bg-white p-4 sm:p-6 rounded-lg border border-secondary/10">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                   <div>
@@ -471,7 +405,6 @@ export function Dashboard() {
                 </div>
               </div>
 
-              {/* Competitors Analysis */}
               <div className="bg-white p-4 sm:p-6 rounded-lg border border-secondary/10">
                 <div className="flex items-center justify-between mb-6">
                   <div>
@@ -509,8 +442,6 @@ export function Dashboard() {
                 </div>
               </div>
             </div>
-
-            {/* Products Table */}
             <div className="bg-white rounded-lg border border-secondary/10">
               <div className="p-4 sm:p-6 border-b border-secondary/10">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -542,6 +473,256 @@ export function Dashboard() {
               </div>
               <ProductsTable products={mockData.products} viewMode={viewMode} searchTerm={debouncedSearch} />
             </div>
+          </>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex">
+      <aside id="dashboard-menu" className="hidden lg:flex flex-col w-64 bg-white border-r border-secondary/10">
+        <div className="p-4 border-b border-secondary/10">
+          <div className="flex items-center gap-3">
+            <BarChart3 className="w-8 h-8 text-primary" />
+            <span className="text-xl font-bold text-secondary-dark">ApexBuy</span>
+          </div>
+        </div>
+        <nav className="flex-1 p-4">
+          <ul className="space-y-2">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.label.toLowerCase();
+              return (
+                <li key={item.label}>
+                  <button 
+                    onClick={() => setActiveSection(item.label.toLowerCase())}
+                    className={`flex items-center gap-3 w-full p-3 rounded-lg text-base transition-colors ${
+                      isActive 
+                        ? 'bg-primary/10 text-primary' 
+                        : 'text-secondary-dark hover:bg-background'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span>{item.label}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+        <div className="p-4 border-t border-secondary/10">
+          <div className="bg-background rounded-lg p-4">
+            <h3 className="font-semibold mb-2">Funciones Premium</h3>
+            <ul className="text-sm text-secondary space-y-2 mb-3">
+              <li className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4" />
+                Análisis predictivo
+              </li>
+              <li className="flex items-center gap-2">
+                <BarChart className="w-4 h-4" />
+                Reportes avanzados
+              </li>
+              <li className="flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                Análisis competitivo
+              </li>
+            </ul>
+            <button className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition-colors">
+              Actualizar Ahora
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {showMobileMenu && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden" 
+          onClick={() => setShowMobileMenu(false)}
+        />
+      )}
+
+      <div 
+        className={`fixed inset-y-0 left-0 w-[280px] bg-white transform ${
+          showMobileMenu ? 'translate-x-0' : '-translate-x-full'
+        } transition-transform duration-200 ease-in-out z-50 lg:hidden overflow-y-auto flex flex-col`}
+      >
+        <div className="p-4 border-b border-secondary/10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <BarChart3 className="w-8 h-8 text-primary" />
+              <span className="text-xl font-bold text-secondary-dark">ApexBuy</span>
+            </div>
+            <button
+              onClick={() => setShowMobileMenu(false)}
+              className="p-2 hover:bg-background rounded-lg"
+            >
+              <X className="w-6 h-6 text-secondary-dark" />
+            </button>
+          </div>
+        </div>
+        <nav className="flex-1 p-4">
+          <ul className="space-y-2">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.label.toLowerCase();
+              return (
+                <li key={item.label}>
+                  <button 
+                    onClick={() => {
+                      setActiveSection(item.label.toLowerCase());
+                      setShowMobileMenu(false);
+                    }}
+                    className={`flex items-center gap-3 w-full p-3 rounded-lg text-base transition-colors ${
+                      isActive 
+                        ? 'bg-primary/10 text-primary' 
+                        : 'text-secondary-dark hover:bg-background'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span>{item.label}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+        <div className="p-4 border-t border-secondary/10">
+          <div className="bg-background rounded-lg p-4">
+            <h3 className="font-semibold mb-2">Funciones Premium</h3>
+            <ul className="text-sm text-secondary space-y-2 mb-3">
+              <li className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4" />
+                Análisis predictivo
+              </li>
+              <li className="flex items-center gap-2">
+                <BarChart className="w-4 h-4" />
+                Reportes avanzados
+              </li>
+              <li className="flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                Análisis competitivo
+              </li>
+            </ul>
+            <button className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition-colors">
+              Actualizar Ahora
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1 flex flex-col min-h-screen">
+        <header className="bg-white border-b border-secondary/10 sticky top-0 z-30">
+          <div className="p-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="flex items-center gap-4 flex-1">
+                <button
+                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                  className="lg:hidden p-2 hover:bg-background rounded-lg"
+                >
+                  <Menu className="w-6 h-6 text-secondary-dark" />
+                </button>
+
+                <div id="search-bar" className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary" />
+                  <input
+                    type="text"
+                    placeholder="Buscar productos..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-secondary/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 justify-between sm:justify-end">
+                <select 
+                  value={timeRange}
+                  onChange={(e) => setTimeRange(e.target.value)}
+                  className="flex-1 sm:flex-none border border-secondary/20 rounded-lg px-3 py-2 text-secondary-dark focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                >
+                  {timeRanges.map(range => (
+                    <option key={range.value} value={range.value}>
+                      {range.label}
+                    </option>
+                  ))}
+                </select>
+
+                <div id="notifications" className="relative">
+                  <button
+                    onClick={() => setShowAlerts(!showAlerts)}
+                    className="p-2 hover:bg-background rounded-lg relative"
+                  >
+                    <Bell className="w-5 h-5 text-secondary-dark" />
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-xs flex items-center justify-center rounded-full">
+                      {mockData.alerts.length}
+                    </span>
+                  </button>
+                  {showAlerts && (
+                    <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-96 bg-white rounded-lg shadow-lg border border-secondary/10 max-h-[80vh] overflow-y-auto">
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="font-semibold">Alertas Recientes</h3>
+                          <button className="text-sm text-primary hover:text-primary-dark">
+                            Ver todas
+                          </button>
+                        </div>
+                        <div className="space-y-3">
+                          {mockData.alerts.map((alert) => (
+                            <div
+                              key={alert.id}
+                              className="flex items-center justify-between p-3 hover:bg-background rounded-lg cursor-pointer"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className={`p-2 rounded-full ${getAlertBg(alert.type)}`}>
+                                  {getAlertIcon(alert.type)}
+                                </div>
+                                <div>
+                                  <p className="font-medium text-secondary-dark">{alert.product}</p>
+                                  <div className="flex items-center gap-2 text-sm text-secondary">
+                                    <Clock className="w-3 h-3" />
+                                    <span>Hace {alert.time}</span>
+                                    {alert.change && (
+                                      <span className={alert.type === 'price-increase' ? 'text-red-500' : 'text-green-500'}>
+                                        {alert.change}
+                                      </span>
+                                    )}
+                                    {alert.stock && (
+                                      <span className="text-yellow-500">
+                                        {alert.stock}
+                                      </span>
+                                    )}
+                                    {alert.competitor && (
+                                      <span className="text-blue-500">
+                                        {alert.competitor}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className={`px-2 py-1 rounded text-xs ${
+                                alert.priority === 'high' 
+                                  ? 'bg-red-100 text-red-700'
+                                  : alert.priority === 'medium'
+                                    ? 'bg-yellow-100 text-yellow-700'
+                                    : 'bg-blue-100 text-blue-700'
+                              }`}>
+                                {alert.priority === 'high' ? 'Alta' : alert.priority === 'medium' ? 'Media' : 'Baja'}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 p-4">
+          <div className="max-w-7xl mx-auto space-y-6">
+            {renderContent()}
           </div>
         </main>
       </div>
