@@ -8,24 +8,36 @@ interface LoginPageProps {
 
 export function LoginPage({ onLogin }: LoginPageProps) {
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = async (accessToken: string) => {
     try {
+      setIsLoading(true);
       const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
       
+      if (!response.ok) {
+        throw new Error('Error al obtener información del usuario');
+      }
+
       const data = await response.json();
       
-      if (data.email?.endsWith('@ceser.com.co')) {
+      // Aquí puedes ajustar el dominio según tus necesidades
+      const allowedDomains = ['ceser.com.co', 'gmail.com']; // Añade los dominios permitidos
+      const emailDomain = data.email.split('@')[1];
+
+      if (allowedDomains.includes(emailDomain)) {
         onLogin(accessToken);
       } else {
-        setError('Solo se permite el acceso con correo corporativo @ceser.com.co');
+        setError('Correo electrónico no autorizado');
       }
     } catch (err) {
       setError('Error al validar el correo electrónico');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -39,15 +51,12 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
         <div className="flex items-center justify-center gap-3 mb-8">
           <BarChart3 className="w-10 h-10 text-primary" />
-          <h1 className="text-2xl font-bold text-secondary-dark">ApexBuy Análisis</h1>
+          <h1 className="text-2xl font-bold text-secondary-dark">ApexBuy</h1>
         </div>
         
         <div className="text-center mb-8">
           <p className="text-secondary mb-2">
-            Accede a tu dashboard para analizar precios y competidores en tiempo real
-          </p>
-          <p className="text-xs text-primary">
-            *Solo para usuarios con correo @ceser.com.co
+            Accede a tu dashboard para analizar precios y competidores
           </p>
         </div>
 
@@ -63,14 +72,15 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             setError(null);
             login();
           }}
-          className="w-full flex items-center justify-center gap-3 bg-white border border-secondary/20 text-secondary-dark rounded-lg px-4 py-3 hover:bg-background transition-colors"
+          disabled={isLoading}
+          className="w-full flex items-center justify-center gap-3 bg-white border border-secondary/20 text-secondary-dark rounded-lg px-4 py-3 hover:bg-background transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
-          Iniciar sesión con Google
+          {!isLoading && <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />}
+          {isLoading ? 'Cargando...' : 'Iniciar sesión con Google'}
         </button>
 
         <p className="mt-4 text-xs text-secondary text-center">
-          Al iniciar sesión, aceptas nuestros términos y condiciones de uso
+          Al iniciar sesión, aceptas nuestros términos y condiciones
         </p>
       </div>
     </div>
